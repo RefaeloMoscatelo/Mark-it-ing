@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .cont{
+            display:inline-flex;
+        }
+        /*#my{
+           // background-color:blue;
+        }*/
+    </style>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <input id="btnTranslate" type="button" value="Translate Ascii to text" />
+
+    <div class="cont">
+        <textarea id="list" rows="400000" cols="50"></textarea>
+        <table id="tbl"></table>
+    </div>
+    <button id="btnExport" onclick="fnExcelReport();"> EXPORT </button>
+    <script>
+
+        $('#btnTranslate').click(function () {
+            var list = $('#list').val();
+
+            
+
+            var str = [];
+
+            str = list.split(',');
+            str = str.map(str => str.replace(/\s/g, ''));
+         
+            var chunks = [];
+            
+
+
+            for (var s = 0; s < str.length; s++) {
+                chunks = [];
+                for (var i = 0, charsLength = str[s].length; i < charsLength; i += 3) {
+                    chunks.push(str[s].substring(i, i + 3));
+
+                }
+                var word = "";
+                for (var j = 0; j < chunks.length; j++) {
+
+                    word += String.fromCharCode(chunks[j]);
+                }
+                $('#tbl').append('<tr><td>' + word + '</td></tr>');
+
+                $('#alist').append(word);
+            }
+        });
+
+
+
+
+
+        function fnExcelReport() {
+            var tab_text = "<table border='2px'><tr>";
+            var textRange; var j = 0;
+            tab = document.getElementById('tbl'); // id of table
+
+            for (j = 0; j < tab.rows.length; j++) {
+                tab_text = tab_text + tab.rows[j].innerHTML + "</tr>";
+                //tab_text=tab_text+"</tr>";
+            }
+
+            tab_text = tab_text + "</table>";
+            tab_text = tab_text.replace(/<A[^>]*>|<\/A>/g, "");//remove if u want links in your table
+            tab_text = tab_text.replace(/<img[^>]*>/gi, ""); // remove if u want images in your table
+            tab_text = tab_text.replace(/<input[^>]*>|<\/input>/gi, ""); // reomves input params
+
+            var ua = window.navigator.userAgent;
+            var msie = ua.indexOf("MSIE ");
+
+            if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer
+            {
+                txtArea1.document.open("txt/html", "replace");
+                txtArea1.document.write(tab_text);
+                txtArea1.document.close();
+                txtArea1.focus();
+                sa = txtArea1.document.execCommand("SaveAs", true, "Say Thanks to Sumit.xls");
+            }
+            else                 //other browser not tested on IE 11
+                sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tab_text));
+
+            return (sa);
+        }
+
+
+
+
+
+                    //var str = [];
+                    //var chunks = [];
+
+                    //for (var s = 0; s < str.length; s++) {
+                    //    chunks = [];
+                    //    for (var i = 0, charsLength = str[s].length; i < charsLength; i += 3) {
+                    //        chunks.push(str[s].substring(i, i + 3));
+
+                    //    }
+                    //    var word = "";
+                    //    for (var j = 0; j < chunks.length; j++) {
+
+                    //        word += String.fromCharCode(chunks[j]);
+                    //    }
+                    //    $('#my').append('<span>' + word + '<br></span>');
+                    //}
+
+
+
+
+
+
+
+
+
+
+                    //function myFunction(text) {
+                    //    var res = String.fromCharCode(104);
+                    //    document.getElementById("demo").innerHTML = res;
+                    //}
+
+
+
+
+
+                            //var Util = {
+                            //    toBinary: function (input) {
+                            //        var result = "";
+                            //        for (var i = 0; i < input.length; i++) {
+                            //            var bin = input[i].charCodeAt().toString(2);
+                            //            result += Array(8 - bin.length + 1).join("0") + bin;
+                            //        }
+                            //        return result;
+                            //    },
+
+                            //    toAscii: function (input) {
+                            //        var result = "";
+                            //        var arr = input.match(/.{1,8}/g);
+                            //        for (var i = 0; i < arr.length; i++) {
+                            //            result += String.fromCharCode(parseInt(arr[i], 2).toString(10));
+                            //        }
+                            //        return result;
+                            //    }
+                            //}
+
+
+        function b64toBlob(b64Data, contentType, sliceSize) {
+            contentType = contentType || '';
+            sliceSize = sliceSize || 512;
+
+            var byteCharacters = atob(b64Data);
+            var byteArrays = [];
+
+            for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+                var byteNumbers = new Array(slice.length);
+                for (var i = 0; i < slice.length; i++) {
+                    byteNumbers[i] = slice.charCodeAt(i);
+                }
+
+                var byteArray = new Uint8Array(byteNumbers);
+
+                byteArrays.push(byteArray);
+            }
+
+            var blob = new Blob(byteArrays, { type: contentType });
+            return blob;
+        }
+
+        var blob = b64toBlob(e.base64(e.format(fullTemplate, e.ctx)), "application/vnd.ms-excel");
+        var blobUrl = URL.createObjectURL(blob);
+        a = document.createElement("a");
+        a.download = getFileName(e.settings);
+        a.href = blobUrl;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    </script>
+</body>
+</html>
