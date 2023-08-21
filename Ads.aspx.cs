@@ -27,7 +27,7 @@ namespace DemoCrmH
                 Server.ClearError();
             }
         }
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["crm_LC_MarketingConnectionString"].ConnectionString);
+        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings[""].ConnectionString);
 
         OleDbConnection Econ;
 
